@@ -1,47 +1,74 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import {ref, watch} from 'vue'
+import TaskInput from '@/components/TaskInput.vue'
+import TaskItem from '@/components/TaskItem.vue'
+import type {ITaskItem} from '@/types/ITaskItem'
+
+let taskList = ref<ITaskItem[]>([]);
+
+taskList.value = JSON.parse(
+    window.localStorage.getItem('taskList') ?? "[]"
+);  // 反串行化
+
+watch(taskList, onSave, {deep: true});
+
+function onAddTask(taskText: string) {
+  taskList.value.push({
+    id: taskList.value.length + 1,
+    text: taskText,
+    isDone: false,
+    isEdit: false
+  });
+}
+
+function onSave() {
+  window.localStorage
+      .setItem('taskList', JSON.stringify(taskList.value));
+}
+
+function onDelete(item: ITaskItem) {
+  taskList.value = taskList.value.filter(it => it !== item);
+}
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="container">
+    <h1>Todo List</h1>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+    <TaskInput @addTask="onAddTask"></TaskInput>
+
+    <div class="task-list">
+      <div v-for="item of taskList" class="task-item">
+        <TaskItem :item="item" @onDelete="onDelete(item)"></TaskItem>
+      </div>
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 80%;
+  margin: 0 auto;
+  background-color: #f3f3f3;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+h1 {
+  text-align: center;
+  margin-top: 20px;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.task-list {
+  padding: 0 2em;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
 }
 </style>
