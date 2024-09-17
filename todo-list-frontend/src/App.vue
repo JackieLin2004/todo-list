@@ -17,8 +17,8 @@ const fetchTasks = async () => {
       isDone: Boolean(item.isDone)  // 将 isDone 转换为布尔值
     }));
   } catch (error) {
-    ElMessage.error('Failed to fetch tasks');
-    console.error('Error fetching tasks:', error);
+    ElMessage.error('无法获取任务列表！');
+    console.error('无法获取任务列表:', error);
   }
 }
 
@@ -33,7 +33,7 @@ async function onDelete(item: ITaskItem) {
     await axios.delete(`http://localhost:8080/todo/item/${item.id}`);
     taskList.value = taskList.value.filter(it => it !== item);
   } catch (error) {
-    console.error('Error deleting task:', error);
+    console.error('无法删除代办事项:', error);
   }
 }
 
