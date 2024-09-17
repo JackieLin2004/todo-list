@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@TableName("todo-item")
+@TableName("`todo-item`")
 @AllArgsConstructor
 public class TodoItem {
     @TableId(type = IdType.AUTO)
