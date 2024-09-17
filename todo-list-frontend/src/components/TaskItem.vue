@@ -1,24 +1,42 @@
 <script setup lang="ts">
-import {ref} from 'vue'
-import type {ITaskItem} from '@/types/ITaskItem'
+import {ref} from 'vue';
+import axios from 'axios';
+import type {ITaskItem} from '@/types/ITaskItem';
 
-const props = defineProps(['item'])
-const emit = defineEmits(['onDelete'])
+defineProps(['item']);
+const emit = defineEmits(['onDelete']);
 
 let itemText = ref("");
 
+// 进入编辑模式
 function onEditClick(item: ITaskItem) {
   item.isEdit = true;
   itemText.value = item.text;
 }
 
+// 删除任务，调用后端 API
 function onDeleteClick(item: ITaskItem) {
-  emit('onDelete', item);
+  axios.delete(`http://localhost:8080/todo/item/${item.id}`)
+      .then(() => {
+        emit('onDelete', item);  // 通知父组件删除任务成功
+      })
+      .catch(error => {
+        console.error('Error deleting task:', error);
+      });
 }
 
+// 确认编辑，调用后端 API 更新任务
 function onEditOkClick(item: ITaskItem) {
   item.isEdit = false;
   item.text = itemText.value;
+
+  axios.put('http://localhost:8080/todo/item', {
+    ...item,
+    text: itemText.value  // 更新后的文本内容
+  })
+      .catch(error => {
+        console.error('Error updating task:', error);
+      });
 }
 </script>
 
@@ -42,6 +60,5 @@ function onEditOkClick(item: ITaskItem) {
 </template>
 
 <style scoped>
-
 
 </style>

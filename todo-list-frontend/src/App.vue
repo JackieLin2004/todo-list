@@ -18,19 +18,9 @@ const fetchTasks = async () => {
 }
 
 // 添加任务
-async function onAddTask(taskText: string) {
-  const newTask = {
-    text: taskText,
-    isDone: false,
-    isEdit: false
-  };
-  try {
-    const response = await axios.post('http://localhost:8080/todo/item', newTask);
-    taskList.value.push(response.data);  // 将新添加的任务推入任务列表
-  } catch (error) {
-    console.error('Error adding task:', error);
-  }
-}
+const onAddTask = (newTask: ITaskItem) => {
+  taskList.value.push(newTask);  // 将新任务推入任务列表
+};
 
 // 删除任务
 async function onDelete(item: ITaskItem) {
