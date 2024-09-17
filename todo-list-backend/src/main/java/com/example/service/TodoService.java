@@ -13,4 +13,6 @@ public interface TodoService extends IService<TodoItem> {
     void deleteTodoItem(Integer id);
 
     void updateTodoItem(TodoItem item);
+
+    void updateIsDone(TodoItem item);
 }

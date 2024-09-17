@@ -2,9 +2,10 @@
 import {ref} from 'vue';
 import axios from 'axios';
 import type {ITaskItem} from '@/types/ITaskItem';
+import {ElMessage} from "element-plus";
 
 defineProps(['item']);
-const emit = defineEmits(['onDelete']);
+const emit = defineEmits(['onDelete', 'fetchTasks']);
 
 let itemText = ref("");
 
@@ -18,9 +19,11 @@ function onEditClick(item: ITaskItem) {
 function onDeleteClick(item: ITaskItem) {
   axios.delete(`http://localhost:8080/todo/item/${item.id}`)
       .then(() => {
+        ElMessage.success('Task deleted successfully');
         emit('onDelete', item);  // 通知父组件删除任务成功
       })
       .catch(error => {
+        ElMessage.error('Failed to delete task');
         console.error('Error deleting task:', error);
       });
 }
@@ -35,14 +38,31 @@ function onEditOkClick(item: ITaskItem) {
     text: itemText.value  // 更新后的文本内容
   })
       .catch(error => {
+        ElMessage.error('Error updating task');
         console.error('Error updating task:', error);
       });
 }
+
+// 处理任务完成状态变更
+const onIsDoneChange = (item: ITaskItem) => {
+  axios.put('http://localhost:8080/todo/item/isdone', {
+    ...item,  // 传递整个任务对象
+    isDone: Boolean(item.isDone)
+  })
+      .then(() => {
+        ElMessage.success('Task isDone status updated successfully');
+        console.log('Task isDone status updated successfully');
+      })
+      .catch(error => {
+        ElMessage.error('Error updating isDone status');
+        console.error('Error updating isDone status:', error);
+      });
+};
 </script>
 
 <template>
   <template v-if="!item.isEdit">
-    <el-checkbox v-model="item.isDone" size="large">
+    <el-checkbox v-model="item.isDone" size="large" @change="onIsDoneChange(item)">
       {{ item.text }}
     </el-checkbox>
     <div>

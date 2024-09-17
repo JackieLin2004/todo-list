@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import axios from 'axios';
+import {ElMessage} from "element-plus";
 
 let emit = defineEmits(['addTask'])
 
@@ -20,6 +21,7 @@ async function onAddTask() {
     todoText.value = '';  // 清空输入框
     emit('addTask', response.data);  // 将新任务传递给父组件
   } catch (error) {
+    ElMessage.error('Failed to add task');
     console.error('Failed to add task:', error);
   }
 }

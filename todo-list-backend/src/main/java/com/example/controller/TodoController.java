@@ -18,20 +18,27 @@ public class TodoController {
         return service.showTodoList();
     }
 
+
     @PostMapping("todo/item")
     public TodoItem addTodoItem(@RequestBody TodoItem item) {
-        service.save(item);
+        service.addTodoItem(item);
         return item;
     }
 
     @DeleteMapping("todo/item/{id}")
     public void deleteTodoItem(@PathVariable Integer id) {
-        service.removeById(id);
+        service.deleteTodoItem(id);
     }
 
+
     @PutMapping("todo/item")
-    public TodoItem updateTodoItem(@RequestBody TodoItem item) {
+    public void updateTodoItem(@RequestBody TodoItem item) {
         service.updateById(item);
+    }
+
+    @PutMapping("/todo/item/isdone")
+    public TodoItem updateIsDone(@RequestBody TodoItem item) {
+        service.updateIsDone(item);
         return item;
     }
 

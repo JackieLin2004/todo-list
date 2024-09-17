@@ -4,3 +4,13 @@ spring:
     username: root
     password: 20040304
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    root: info
+    com.example: debug  # 设置你的包名的日志级别
+    org.apache.ibatis: debug  # 打开MyBatis的调试级别日志

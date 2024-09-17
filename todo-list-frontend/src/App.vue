@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {ref, onMounted} from 'vue'
+import {ElMessage} from 'element-plus';
 import TaskInput from '@/components/TaskInput.vue'
 import TaskItem from '@/components/TaskItem.vue'
 import axios from 'axios'
@@ -11,8 +12,12 @@ let taskList = ref<ITaskItem[]>([]);
 const fetchTasks = async () => {
   try {
     const response = await axios.get('http://localhost:8080/todo/list');  // 访问后端接口
-    taskList.value = response.data;
+    taskList.value = response.data.map((item: ITaskItem) => ({
+      ...item,
+      isDone: Boolean(item.isDone)  // 将 isDone 转换为布尔值
+    }));
   } catch (error) {
+    ElMessage.error('Failed to fetch tasks');
     console.error('Error fetching tasks:', error);
   }
 }
